@@ -3,9 +3,10 @@ public:
     long long gcdSum(vector<int>& nums) {
         int maxi = nums[0];
         vector<int> prefixgcd;
+        int pgcd ;
         for (int i = 0; i < nums.size(); i++) {
             maxi = max(maxi, nums[i]);
-            int pgcd = __gcd(nums[i], maxi);
+             pgcd = __gcd(nums[i], maxi);
             prefixgcd.push_back(pgcd);
         }
         sort(prefixgcd.begin() , prefixgcd.end());
