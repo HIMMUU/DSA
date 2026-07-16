@@ -13,7 +13,7 @@
 class Solution {
 public:
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        map<int, int> mpp;
+    unordered_map<int, int> mpp;
         for (int i = 0; i < inorder.size(); i++) {
             mpp[inorder[i]] = i;
         }
@@ -23,7 +23,7 @@ public:
     }
     TreeNode* buildtree(vector<int> &preorder, int ps, int pe,
                         vector<int> &inorder, int is, int ie,
-                        map<int, int>& mpp) {
+                        unordered_map<int, int>& mpp) {
         if (ps > pe || is > ie)
             return NULL;
         TreeNode* node = new TreeNode(preorder[ps]);
