@@ -1,33 +1,29 @@
 class Solution {
-private:
-    bool check(vector<vector<int>>& mat, int i, int j) {
-        int n = mat.size();
-        int m = mat[0].size();
-        bool b1 = false, b2 = false, b3 = false, b4 = false;
-
-        // if (mat[i - 1][j] < mat[i][j] && mat[i + 1][j] < mat[i][j] &&
-        //     mat[i][j + 1] < mat[i][j] && mat[i][j - 1] < mat[i][j]) {
-        //     return true;
-        // }
-        if( i-1 < 0 || mat[i - 1][j] < mat[i][j]) b1 = true ;
-        if( i+1 >= n || mat[i +1][j] < mat[i][j]) b2 = true ; 
-        if( j+1 >= m ||  mat[i][j + 1] < mat[i][j]) b3 = true ;
-        if(j-1 < 0  || mat[i][j-1] < mat[i][j]) b4 = true ; 
-        if( b1 && b2 && b3 && b4) return true ;
-        else return false;
-    }
-
 public:
-    vector<int> findPeakGrid(vector<vector<int>>& mati) {
-        int n = mati.size();
-        int m = mati[0].size();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (check(mati, i, j)) {
-                    return {i, j};
-                }
-            }
+    int maxRow(vector<vector<int>>& mat, int col) {
+        int row = 0;
+        for (int i = 1; i < mat.size(); i++) {
+            if (mat[i][col] > mat[row][col])
+                row = i;
         }
-        return {0, 0};
+        return row;
+    }
+    vector<int> findPeakGrid(vector<vector<int>>& mat) {
+        int n = mat.size(), m = mat[0].size(), row = -1;
+        int l = 0, h = m - 1; // choose col
+        while (l <= h) {
+            int mid = l + (h - l) / 2;
+            int row = maxRow(mat, mid); // up down element is small
+            // check for left right now
+            int left = (mid - 1 >= 0) ? mat[row][mid - 1] : -1;
+            int right = (mid + 1 < m) ? mat[row][mid + 1] : -1;
+            if (mat[row][mid] > left && mat[row][mid] > right)
+                return {row, mid};
+            if (mat[row][mid] < left)
+                h = mid - 1;
+            else if (mat[row][mid] < right)
+                l = mid + 1;
+        }
+        return {-1, -1};
     }
 };
