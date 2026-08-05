@@ -1,55 +1,61 @@
-constexpr int MAXN = 100005;
-
 class Solution {
+    private:
+    void  dfs( int node , vector<vector<int>> &adj,vector<int> &vis ,  vector<int> & comp ){
+        vis[node] = 1 ; 
+        comp.push_back(node);
+        for( int nei : adj[node]){
+            if(vis[nei] == 0 ){
+                dfs(nei ,adj, vis ,comp );
+            }
+        }
+    }
 public:
-    vector<int> remainingMethods(int n, int k,
-                                 vector<vector<int>>& invocations) {
-        vector<vector<int>> edges(n);
-        vector<int> inDegree(n, 0);
+    vector<int> remainingMethods(int n, int k, vector<vector<int>>& inv) {
+     vector<vector<int>> adj(n);
+vector<vector<int>> unadj(n);
+        for( int i = 0 ; i < inv.size() ; i++){
+            adj[inv[i][0]].push_back(inv[i][1]);
+            unadj[inv[i][0]].push_back(inv[i][1]);
+            unadj[inv[i][1]].push_back(inv[i][0]);
+        }
+        
 
-        bitset<MAXN> suspicious;
-
-        for (const auto& inv : invocations) {
-            edges[inv[0]].push_back(inv[1]);
-            inDegree[inv[1]]++;
+        vector<vector<int>> component ; 
+        vector<int> vis( n , 0 );
+        for( int i = 0 ; i < n ; i++ ){
+            if(vis[i] == 0 ){
+                vector<int> comp ; 
+                dfs( i , unadj , vis , comp);
+                component.push_back(comp);
+            }
         }
 
-        queue<int> q;
-        q.push(k);
-
-        suspicious.set(k);
-
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-            for (int v : edges[u]) {
-                inDegree[v]--;
-
-                if (!suspicious.test(v)) {
-                    q.push(v);
-                    suspicious.set(v);
+        vector<int> visit(n,0) ;
+        vector<int> tempcomp;
+        
+        dfs( k , adj , visit , tempcomp );
+        unordered_map<int,int> mpp ;
+        for( int k : tempcomp){
+            mpp[k]++;
+        }
+        
+      vector< int> ans ;
+        for(int i = 0 ; i<component.size() ; i++){
+            bool lena = true;
+            for( int j =0 ; j <component[i].size() ; j++){
+                if(component[i][j] == k){
+                    if( component[i].size() == tempcomp.size()){
+                        lena = false;
+                        break;
+                    }
                 }
             }
-        }
-
-        bool canRemoveAll = true;
-        vector<int> remaining;
-
-        for (int i = 0; i < n; i++) {
-            if (suspicious.test(i) && inDegree[i] > 0) {
-                canRemoveAll = false;
-                break;
-            } else if (!suspicious.test(i)) {
-                remaining.push_back(i);
+            for( int  j = 0 ; j < component[i].size() && lena == true  ; j++){
+                    ans.push_back(component[i][j]);
             }
         }
+        return ans;
 
-        if (!canRemoveAll) {
-            vector<int> allNodes(n);
-            iota(allNodes.begin(), allNodes.end(), 0);
-            return allNodes;
-        }
-
-        return remaining;
+        
     }
 };
