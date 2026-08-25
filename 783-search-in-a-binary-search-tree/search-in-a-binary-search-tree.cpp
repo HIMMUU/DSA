@@ -17,7 +17,7 @@ class Solution {
     //     if( root->val <  val )
     //  }
 public:
-    TreeNode* searchBST(TreeNode* root, int val) {
+    TreeNode* searchBST(TreeNode* root, int &val) {
         if (root == NULL)
             return NULL;
         if (root->val == val)
